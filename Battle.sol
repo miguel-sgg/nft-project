@@ -31,7 +31,7 @@ contract Battle {
         }
     }
 
-    function attack(uint256 _tokenId, uint256 _targetId) external payable onlyOwnerOf(_tokenId) { 
+    function attack(uint256 _tokenId, uint256 _targetId) external onlyOwnerOf(_tokenId) { 
         //returns (uint256 tokenId, uint256 targetId, uint8 level, uint8 strength, uint8 targetLevel, uint8 targetStrength, uint8 successfulAttacks, uint8 successsfulDefenses) {
         require(ppal.tokenCount() > 2, "There is only one token");
         AvatarCore.Avatar memory myAvatar = ppal.getCharacters(_tokenId);
