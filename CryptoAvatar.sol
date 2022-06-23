@@ -189,7 +189,7 @@ abstract contract AvatarBuy is AvatarOffer {
 
 contract AvatarCore is AvatarBuy {
     
-    uint256 internal reproductionPrice;
+    uint256 private reproductionPrice;
 
     constructor(string memory _name, string memory _symbol) AvatarCreator(_name, _symbol) {
         royalties = 5;
