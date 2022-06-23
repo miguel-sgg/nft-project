@@ -46,9 +46,7 @@ contract AvatarCreator is ERC721, Ownable {
     }
 
     function getCharacters(uint256 _tokenId) public view returns (Avatar memory) {
-    //returns(uint8 level, uint8 strength, uint8 successfulAttacks, uint8 successfulDefences){
         return characters[_tokenId];
-        //return (characters[tokenId].level, characters[tokenId].strength, characters[tokenId].successfulAttacks, characters[tokenId].successfulDefences);
     }
 
     function repeatedName(string memory _name) internal view returns (bool) {
@@ -66,7 +64,6 @@ contract AvatarCreator is ERC721, Ownable {
     function _createAvatar(string memory _name, uint256 _dna) internal {
         characters.push(Avatar(_name, uint32(tokenCount), _dna, 1, aux._calculateStrength(_dna), 0, 0, 0));
         _safeMint(msg.sender, tokenCount);
-        tokenCount = tokenCount++;
         tokenIdToOwner[tokenCount] = msg.sender;
         ownerTokenCount[msg.sender] = ownerTokenCount[msg.sender]++;
         emit NewAvatar(tokenCount, _name, _dna);
@@ -77,6 +74,7 @@ contract AvatarCreator is ERC721, Ownable {
         // Solo dejamos que el usuario cree de la nada un solo avatar. Si quiere tener más tendrá que cruzarlos con los de otro jugador
         require(ownerTokenCount[msg.sender] == 0);
         _createAvatar(_name, _generateDNA(_name));
+        tokenCount++;
     }
 
     function getContractInfo() external view returns (address, uint256) {
@@ -88,47 +86,6 @@ contract AvatarCreator is ERC721, Ownable {
     }
 
 }
-
-/*
-abstract contract AvatarBattle is AvatarCreator {
-
-    event LevelUp(uint256 indexed tokenId, address indexed owner, uint8 indexed newLevel);
-
-    function _levelUp(uint256 _tokenId) private returns (string memory) {
-        if(characters[_tokenId].level+1 <= MAX_LEVEL) {
-            characters[_tokenId].level++;
-            characters[_tokenId].strength += 2;
-            emit LevelUp(_tokenId, tokenIdToOwner[_tokenId], characters[_tokenId].level);
-            return "";
-        }
-        else return "Max level reached";
-        
-    }
-
-    function attack(uint256 _tokenId, uint256 _targetId) external payable onlyOwnerOf(_tokenId) {
-        require(tokenCount > 2);
-        Avatar storage myAvatar = characters[_tokenId];
-        Avatar storage enemyAvatar = characters[_targetId];
-        // en caso de empate en fuerza ganará el defensor
-        if (myAvatar.strength > enemyAvatar.strength) {
-            // si ganas 10 ataques subes 2 niveles
-            myAvatar.successfulAttacks++;
-            if (myAvatar.successfulAttacks % 10 == 0) {
-                myAvatar.successfulAttacks = 0;
-                _levelUp(myAvatar.id);
-            }
-        } else {
-            // si ganas 15 defensas, subes de nivel
-            enemyAvatar.successfulDefences++;
-            if (myAvatar.successfulDefences % 15 == 0) {
-                enemyAvatar.successfulDefences = 0;
-                _levelUp(enemyAvatar.id);
-            }
-        }
-    }
-
-}
-*/
 
 abstract contract AvatarFeatures is AvatarCreator {
 
